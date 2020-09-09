@@ -93,5 +93,19 @@ CREATE TABLE "file_meta"(
 	"mtime" INTEGER
 );
 
+CREATE TABLE "sessions"(
+	"id" INTEGER PRIMARY KEY NOT NULL,
+	"session_id" TEXT NOT NULL UNIQUE,
+	"last_access" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL REFERENCES "users"
+);
+
+CREATE TABLE "session_data"(
+	"session_id" INTEGER NOT NULL REFERENCES "sessions",
+	"key" TEXT NOT NULL,
+	"value" TEXT NOT NULL,
+	UNIQUE("session_id", "key")
+);
+
 
 COMMIT TRANSACTION;

@@ -53,6 +53,7 @@ CREATE TABLE "files" (
 CREATE TABLE "file_chunks" (
 	"hash" TEXT NOT NULL PRIMARY KEY,
 	"uncompressed_size" INTEGER NOT NULL,
+	"created_timestamp" INTEGER NOT NULL,
 	"data" BLOB NOT NULL
 );
 

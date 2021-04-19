@@ -71,7 +71,8 @@ CREATE TABLE "backup_status" (
 	"backup_plan_id" INTEGER NOT NULL REFERENCES "backup_plans"("id"),
 	"start_time" INTEGER,
 	"end_time" INTEGER,
-	"last_update" INTEGER
+	"last_update" INTEGER,
+	"success" INTEGER
 );
 
 CREATE TABLE "users" (

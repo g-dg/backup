@@ -93,7 +93,6 @@ CREATE TABLE "sessions" (
 	"id" TEXT NOT NULL PRIMARY KEY,
 	"last_access" INTEGER,
 	"user_id" INTEGER REFERENCES "users"("id"),
-	"csrf_token" TEXT NOT NULL,
 	"data" TEXT
 );
 

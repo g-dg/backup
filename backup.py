@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+config = {
+	"config_file": "./config.json",
+	"debug": True
+}
+
 import base64
 import gzip
 import hashlib
@@ -10,15 +15,12 @@ import os
 import pwd
 import shutil
 import sqlite3
+import stat
 import sys
 import urllib
 
-config = {
-	"debug": True
-}
 
-
-if sys.version_info[0] < 3 or sys.version_info[1] < 4:
+if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 4):
 	raise Exception("This program requres Python 3.4 or later.")
 
 
@@ -57,7 +59,10 @@ class Server:
 
 			apiActions = {
 				"GET": {
+					"status": None,
 					"file": None,
+					"chunk": None,
+					"download": None,
 				},
 				"POST": {
 					"status": None,

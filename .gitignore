@@ -1,6 +1,4 @@
-/server/config.php
-
-/client/config.json
+/config.json
 
 /backup.sqlite3
 /backup.sqlite3-journal

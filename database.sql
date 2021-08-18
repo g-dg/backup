@@ -10,9 +10,9 @@ BEGIN TRANSACTION;
 
 PRAGMA user_version = 1000000;
 
-CREATE TABLE "file_names" (
+CREATE TABLE "files" (
 	"id" INTEGER PRIMARY KEY,
-	"parent_id" INTEGER REFERENCES "file_names",
+	"parent_id" INTEGER REFERENCES "files",
 	"name" TEXT NOT NULL,
 	UNIQUE("parent_id", "name")
 );
@@ -21,37 +21,28 @@ CREATE TABLE "backup_plans" (
 	"id" INTEGER PRIMARY KEY,
 	"name" TEXT NOT NULL,
 	"backup_key" TEXT NOT NULL UNIQUE,
-	"root_file_name" INTEGER NOT NULL REFERENCES "file_names"("id"),
+	"root_file_id" INTEGER NOT NULL REFERENCES "files"("id"),
 	"min_age" INTEGER DEFAULT 2592000,
 	"max_age" INTEGER DEFAULT 31536000
 );
 
-CREATE TABLE "users_groups" (
+CREATE TABLE "file_meta" (
 	"id" INTEGER PRIMARY KEY,
-	"system_id" INTEGER,
-	"name" TEXT,
-	UNIQUE("name", "system_id")
-);
-
-CREATE TABLE "files" (
-	"id" INTEGER PRIMARY KEY,
-	"filename_id" INTEGER NOT NULL REFERENCES "file_names"("id"),
+	"file_id" INTEGER NOT NULL REFERENCES "files"("id"),
 	"valid_start" INTEGER,
 	"valid_end" INTEGER,
 	"type" INTEGER NOT NULL,
 	"hash" TEXT,
 	"size" INTEGER,
-	"link_target" INTEGER REFERENCES "file_names"("id"),
-	"user_id" INTEGER REFERENCES "users_groups"("id"),
-	"group_id" INTEGER REFERENCES "users_groups"("id"),
-	"mode" INTEGER,
-	"atime" INTEGER,
-	"ctime" INTEGER,
-	"mtime" INTEGER
+	"link_target" INTEGER REFERENCES "files"("id"),
+	"metadata" TEXT
 );
+CREATE INDEX "idx_fileMeta_fileId" ON "file_meta"("file_id");
+CREATE INDEX "idx_fileMeta_linkTarget" ON "file_meta"("link_target");
 
-CREATE TABLE "file_chunks" (
+CREATE TABLE "file_data_chunks" (
 	"hash" TEXT NOT NULL PRIMARY KEY,
+	"compression_algorithm" TEXT,
 	"uncompressed_size" INTEGER NOT NULL,
 	"created_timestamp" INTEGER NOT NULL,
 	"data" BLOB NOT NULL
@@ -59,11 +50,12 @@ CREATE TABLE "file_chunks" (
 
 CREATE TABLE "file_data" (
 	"id" INTEGER PRIMARY KEY,
-	"file_id" INTEGER NOT NULL REFERENCES "files"("id"),
+	"file_id" INTEGER NOT NULL REFERENCES "file_meta"("id"),
 	"chunk_index" INTEGER NOT NULL,
-	"chunk_hash" TEXT NOT NULL REFERENCES "file_chunks"("hash"),
+	"chunk_hash" TEXT NOT NULL REFERENCES "file_data_chunks"("hash"),
 	UNIQUE("file_id", "chunk_index")
 );
+CREATE INDEX "idx_fileData_fileId" ON "file_data"("file_id");
 CREATE INDEX "idx_fileData_chunkHash" ON "file_data"("chunk_hash");
 
 CREATE TABLE "backup_status" (
@@ -78,7 +70,7 @@ CREATE TABLE "backup_status" (
 CREATE TABLE "users" (
 	"id" INTEGER PRIMARY KEY,
 	"username" TEXT NOT NULL UNIQUE,
-	"password" TEXT NOT NULL,
+	"password_hash" TEXT NOT NULL,
 	"admin" INTEGER NOT NULL DEFAULT 0
 );
 

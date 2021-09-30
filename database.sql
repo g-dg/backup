@@ -1,4 +1,5 @@
 PRAGMA page_size = 65536;
+PRAGMA max_page_count = 4294967294;
 PRAGMA auto_vacuum = INCREMENTAL;
 
 PRAGMA journal_mode = WAL;
@@ -32,7 +33,6 @@ CREATE TABLE "file_meta" (
 	"valid_start" INTEGER,
 	"valid_end" INTEGER,
 	"type" INTEGER NOT NULL,
-	"hash" TEXT,
 	"size" INTEGER,
 	"link_target" INTEGER REFERENCES "files"("id"),
 	"metadata" TEXT
@@ -41,7 +41,7 @@ CREATE INDEX "idx_fileMeta_fileId" ON "file_meta"("file_id");
 CREATE INDEX "idx_fileMeta_linkTarget" ON "file_meta"("link_target");
 
 CREATE TABLE "file_data_chunks" (
-	"hash" TEXT NOT NULL PRIMARY KEY,
+	"hash_sha256" TEXT NOT NULL PRIMARY KEY,
 	"compression_algorithm" TEXT,
 	"uncompressed_size" INTEGER NOT NULL,
 	"created_timestamp" INTEGER NOT NULL,
@@ -52,11 +52,11 @@ CREATE TABLE "file_data" (
 	"id" INTEGER PRIMARY KEY,
 	"file_id" INTEGER NOT NULL REFERENCES "file_meta"("id"),
 	"chunk_index" INTEGER NOT NULL,
-	"chunk_hash" TEXT NOT NULL REFERENCES "file_data_chunks"("hash"),
+	"chunk_hash_sha256" TEXT NOT NULL REFERENCES "file_data_chunks"("hash_sha256"),
 	UNIQUE("file_id", "chunk_index")
 );
 CREATE INDEX "idx_fileData_fileId" ON "file_data"("file_id");
-CREATE INDEX "idx_fileData_chunkHash" ON "file_data"("chunk_hash");
+CREATE INDEX "idx_fileData_chunkHashSha256" ON "file_data"("chunk_hash_sha256");
 
 CREATE TABLE "backup_status" (
 	"id" INTEGER PRIMARY KEY,

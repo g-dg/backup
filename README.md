@@ -21,7 +21,8 @@ Supported features:
 	- Data is de-duplicated on a block level with a default block size of 1MB
 	- Duplication of blocks is detected with SHA256 hashing
 - Compression
-	- Supports gzip compression on client and server (on client by default) and validation on server
+	- Server may compress the data blocks for storage
+- Uses either single database file or multiple databases.
 
 Potential future features:
 - Hard links

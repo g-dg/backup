@@ -19,14 +19,4 @@ CREATE TABLE "file_data_chunks" (
 	"data" BLOB NOT NULL
 );
 
-CREATE TABLE "file_data" (
-	"id" INTEGER PRIMARY KEY,
-	"file_id" INTEGER NOT NULL,
-	"chunk_index" INTEGER NOT NULL,
-	"chunk_hash_sha256" TEXT NOT NULL REFERENCES "file_data_chunks"("hash_sha256"),
-	UNIQUE("file_id", "chunk_index")
-);
-CREATE INDEX "idx_fileData_fileId" ON "file_data"("file_id");
-CREATE INDEX "idx_fileData_chunkHashSha256" ON "file_data"("chunk_hash_sha256");
-
 COMMIT TRANSACTION;

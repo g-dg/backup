@@ -40,6 +40,16 @@ CREATE TABLE "file_meta" (
 CREATE INDEX "idx_fileMeta_fileId" ON "file_meta"("file_id");
 CREATE INDEX "idx_fileMeta_linkTarget" ON "file_meta"("link_target");
 
+CREATE TABLE "file_data" (
+	"id" INTEGER PRIMARY KEY,
+	"file_id" INTEGER NOT NULL REFERENCES "file_meta"("id"),
+	"chunk_index" INTEGER NOT NULL,
+	"chunk_hash_sha256" TEXT NOT NULL,
+	UNIQUE("file_id", "chunk_index")
+);
+CREATE INDEX "idx_fileData_fileId" ON "file_data"("file_id");
+CREATE INDEX "idx_fileData_chunkHashSha256" ON "file_data"("chunk_hash_sha256");
+
 CREATE TABLE "backup_status" (
 	"id" INTEGER PRIMARY KEY,
 	"backup_plan_id" INTEGER NOT NULL REFERENCES "backup_plans"("id"),

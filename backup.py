@@ -59,18 +59,17 @@ class Server:
 
 			apiActions = {
 				"GET": {
-					"status": None,
-					"file": None,
-					"chunk": None,
-					"download": None,
+					"server_info": None,
+					"file_meta": None,
+					"file_chunk": None,
 				},
 				"POST": {
-					"status": None,
-					"file": None,
-					"chunk": None,
-					"optimize": None,
+					"file_meta": None,
+					"file_chunk": None,
 				}
 			}
+
+		self.output_headers()
 
 class ServerAPI:
 	def __init__(self):

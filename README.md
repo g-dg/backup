@@ -25,6 +25,7 @@ Supported features:
 - Uses either single database file or multiple databases.
 
 Potential future features:
+- Web-based file history browser
 - Hard links
 - Client-side encryption
 - Access control lists

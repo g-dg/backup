@@ -38,11 +38,7 @@ class Server:
 
 		self.requestMethod = os.environ.get("REQUEST_METHOD", "GET")
 
-		self.getVars = urllib.parse.parse_qs(os.environ.get("QUERY_STRING"))
-		if self.requestMethod == "POST":
-			self.postVars = urllib.parse.parse_qs(sys.stdin.read())
-		else:
-			self.postVars = None
+		self.getVars = urllib.parse.parse_qs(os.environ.get("QUERY_STRING"), keep_blank_values=True)
 
 		self.pathInfo = os.environ.get("PATH_INFO", "")
 
@@ -50,6 +46,9 @@ class Server:
 		for header, value in self.responseHeaders.items():
 			print(header, ": ", value, end="\r\n", sep="")
 		print("", end="\r\n")
+
+	def parse_post_vars(self):
+		return urllib.parse.parse_qs(sys.stdin.read(), keep_blank_values=True)
 
 	def route(self):
 		pathInfoSplit = self.pathInfo.lstrip("/").split("/")
